@@ -11,7 +11,7 @@ Get started with capstan by running this docker container.
 
 ## Get Started
 
-1. Review the environment variable default values.
+Review the environment variable default values.
 
 ```
 $ make debug
@@ -27,26 +27,27 @@ GCP_ZONE             = us-central1-a
 GCP_SERVICE_ACCOUNT  = terraform-admin
 ```
 
-2. Choose to update the environment values by exporting the new values, setting them on the make command line, or to new values by exporting
+Choose to update the environment values by exporting the new values, setting them on the make command line, or to new values by exporting
 
 ```
 $ export CAPSTAN_REPO=https://github.com/myrepo/capstan.git
 $ export CAPSTAN_TAG=feature/mynewfeature
 ```
 
-3. Build the bootstrap container:
+Build the bootstrap container:
 
 ```
 $ make container
 $ make .container.root
 ```
 
-4. Copy the already downloaded service account JSON into the root
+Copy the service account JSON downloaded while setting up GCP project into .container.root
+
 ```
 $ cp ~/Downloads/capstandemoNN*.json .container.root/
 ```
 
-5. Next, inside the container, initialize and run Capstan with your GCP project and credentials
+Next, inside the container, initialize and run Capstan with your GCP project and credentials
 
 ```
 $ make shell
