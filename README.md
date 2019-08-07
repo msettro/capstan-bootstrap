@@ -1,15 +1,30 @@
 # capstan-bootstrap
 
-Get started with capstan by running this docker container.
+Get started faster with [Kenzan Capstan](https://github.com/kenzanlabs/capstan).
+
+Provides a docker container that automates setup steps described in the Getting Started READMEs.
+
+## Support
+
+* Currently automates steps for GCP ([see here](https://github.com/kenzanlabs/capstan/tree/master/gcp)).
 
 ## Requirements
 
-* Choose a name for your project (i.e. capstandemoNN is used default, replace with your value)
-* Create a GCP account (optional)
-* Create a GCP project (based on choosen name)
-* Docker 18.06.1 or later
+* Run Docker 18.06.1 or later
+* Google Cloud Platform account with admin access (i.e setting up a trial account is a good option)
 
 ## Get Started
+
+For GCP, setup a project, service account and credentials...
+
+* Choose a name for the GCP project (i.e. capstandemoNN is a placeholder and default; replace NN with your value)
+* Create a GCP project (based on choosen name)
+* Create a GCP terraform-admin service account ([see here](https://github.com/kenzanlabs/capstan/tree/master/gcp)) 
+* Download your service account JSON file
+
+Reference
+
+* https://github.com/kenzanlabs/capstan/tree/master/gcp
 
 Review the environment variable default values.
 
