@@ -39,10 +39,19 @@ CONTAINER_ROOT = .container.root
 nothing:
 
 debug:
-	@printf "%-20.20s = %s\n" CONTAINER_NAME    "$(CONTAINER_NAME)"
-	@printf "%-20.20s = %s\n" CONTAINER_VERSION "$(CONTAINER_VERSION)"
-	@printf "%-20.20s = %s\n" GIT_AUTHOR_NAME   "$(GIT_AUTHOR_NAME)"
-	@printf "%-20.20s = %s\n" GIT_AUTHOR_EMAIL  "$(GIT_AUTHOR_EMAIL)"
+	@printf "%-20.20s = %s\n" CONTAINER_NAME      "$(CONTAINER_NAME)"
+	@printf "%-20.20s = %s\n" CONTAINER_VERSION   "$(CONTAINER_VERSION)"
+	@printf "%-20.20s = %s\n" CONTAINER_ROOT      "$(CONTAINER_ROOT)"
+
+	@printf "%-20.20s = %s\n" GIT_AUTHOR_NAME     "$(GIT_AUTHOR_NAME)"
+	@printf "%-20.20s = %s\n" GIT_AUTHOR_EMAIL    "$(GIT_AUTHOR_EMAIL)"
+
+	@printf "%-20.20s = %s\n" CAPSTAN_REPO        "$(CAPSTAN_REPO)"
+	@printf "%-20.20s = %s\n" CAPSTAN_TAG         "$(CAPSTAN_TAG)"
+
+	@printf "%-20.20s = %s\n" GCP_PROJECT         "$(GCP_PROJECT)"
+	@printf "%-20.20s = %s\n" GCP_ZONE            "$(GCP_ZONE)"
+	@printf "%-20.20s = %s\n" GCP_SERVICE_ACCOUNT "$(GCP_SERVICE_ACCOUNT)"
 
 superclean: clean.container clean.container.root
 
