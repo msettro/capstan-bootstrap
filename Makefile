@@ -84,7 +84,7 @@ clean.container.root:
 
 ###
 
-kenzan/capstan: container
+$(CONTAINER_NAME): container
 
 container: 
 	docker build -t $(CONTAINER_NAME):$(CONTAINER_VERSION) -t $(CONTAINER_NAME):latest -f Dockerfile .
