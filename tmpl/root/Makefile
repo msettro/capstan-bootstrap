@@ -1,39 +1,47 @@
 #
 # usage:
-#   make < init | debug | clean >
+#   make < init | spinnaker | debug | clean >
 #
 
-GCP_ZONE=$(shell cat .config/gcloud/configurations/config_default | grep zone | awk '{ printf("%s",$$3) }')
+GCP_ZONE ?= $(shell [[ -f .config/gcloud/configurations/config_default ]] && cat .config/gcloud/configurations/config_default | grep zone | awk '{ printf("%s",$$3) }')
 
 nothing:
 
+spinnaker: terraform
+
 init: .gitconfig capstan gcloud gcloud.services gcloud.test gcp-account.json
 
-clean: clean.gitconfig clean.capstan clean.gcloud clean.gcloud.test clean.gcp-account.json clean.terraform
+clean: clean.terraform clean.gcp-account.json clean.gcloud.test clean.gcloud clean.capstan clean.gitconfig
 
 debug:
-	@printf "%-20.20s = %s\n" "CAPSTAN_REPO"           "$(CAPSTAN_REPO)"
-	@printf "%-20.20s = %s\n" "CAPSTAN_TAG"            "$(CAPSTAN_TAG)"
+	@printf "%-25.25s = %s\n" "CAPSTAN_REPO"           "$(CAPSTAN_REPO)"
+	@printf "%-25.25s = %s\n" "CAPSTAN_TAG"            "$(CAPSTAN_TAG)"
 
-	@printf "%-20.20s = %s\n" "GCP_PROJECT"            "$(GCP_PROJECT)"
-	@printf "%-20.20s = %s\n" "GCP_ZONE"               "$(GCP_ZONE)"
-	@printf "%-20.20s = %s\n" "GCP_SERVICE_ACCOUNT"    "$(GCP_SERVICE_ACCOUNT)"
+	@printf "%-25.25s = %s\n" "GCP_PROJECT"            "$(GCP_PROJECT)"
+	@printf "%-25.25s = %s\n" "GCP_ZONE"               "$(GCP_ZONE)"
+	@printf "%-25.25s = %s\n" "GCP_SERVICE_ACCOUNT"    "$(GCP_SERVICE_ACCOUNT)"
 
-	@printf "%-20.20s = %s\n" "GIT_AUTHOR_EMAIL"       "$(GIT_AUTHOR_EMAIL)"
-	@printf "%-20.20s = %s\n" "GIT_AUTHOR_NAME"        "$(GIT_AUTHOR_NAME)"
+	@printf "%-25.25s = %s\n" "GIT_AUTHOR_EMAIL"       "$(GIT_AUTHOR_EMAIL)"
+	@printf "%-25.25s = %s\n" "GIT_AUTHOR_NAME"        "$(GIT_AUTHOR_NAME)"
 
-	@printf "%-20.20s = %s\n" "TF_VAR_gcp_project_id"  "$(TF_VAR_gcp_project_id)"
-	@printf "%-20.20s = %s\n" "TF_VAR_ssh_user"        "$(TF_VAR_ssh_user)"
+	@printf "%-25.25s = %s\n" "TF_VAR_gcp_project_id"  "$(TF_VAR_gcp_project_id)"
+	@printf "%-25.25s = %s\n" "TF_VAR_ssh_user"        "$(TF_VAR_ssh_user)"
 
 ###
 
-spinnaker: terraform
-
-terraform:
+terraform.destroy:
 	cd /root/capstan/gcp/terraform/ \
-	   && terraform init  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
-	   && terraform plan  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
-	   && terraform apply -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) -auto-approve -refresh=true | tee -a /root/terraform.log
+	   && time terraform destroy -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT)
+
+terraform.show:
+	cd /root/capstan/gcp/terraform/ \
+	   && time terraform show
+
+terraform: capstan gcp-account.json
+	cd /root/capstan/gcp/terraform/ \
+	   && time terraform init  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
+	   && time terraform plan  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
+	   && time terraform apply -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) -auto-approve -refresh=true | tee -a /root/terraform.log
 
 clean.terraform:
 	rm -Rf /root/.terraform.d /root/capstan/gcp/terraform/.terraform.d
@@ -43,7 +51,7 @@ clean.terraform:
 gcp-account.json: /root/capstan/gcp/terraform/gcp-account.json
 
 /root/capstan/gcp/terraform/gcp-account.json:
-	cp /root/capstan*json /root/capstan/gcp/terraform/gcp-account.json
+	cp /root/$(GCP_PROJECT)*json /root/capstan/gcp/terraform/gcp-account.json
 
 clean.gcp-account.json:
 	rm -Rf /root/capstan/gcp/terraform/gcp-account.json
