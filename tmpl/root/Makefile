@@ -29,11 +29,19 @@ debug:
 
 ###
 
+terraform.destroy:
+	cd /root/capstan/gcp/terraform/ \
+	   && time terraform destroy -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT)
+
+terraform.show:
+	cd /root/capstan/gcp/terraform/ \
+	   && time terraform show
+
 terraform: capstan gcp-account.json
 	cd /root/capstan/gcp/terraform/ \
-	   && terraform init  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
-	   && terraform plan  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
-	   && terraform apply -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) -auto-approve -refresh=true | tee -a /root/terraform.log
+	   && time terraform init  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
+	   && time terraform plan  -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) \
+	   && time terraform apply -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT) -auto-approve -refresh=true | tee -a /root/terraform.log
 
 clean.terraform:
 	rm -Rf /root/.terraform.d /root/capstan/gcp/terraform/.terraform.d
