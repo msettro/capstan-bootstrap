@@ -47,7 +47,7 @@ RUN gcloud components install kubectl && \
 #    v0.12.6 is terraform 2
 #
 
-ARG TERRAFORM_VERSION=0.12.6
+ARG TERRAFORM_VERSION=0.11.14
 ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 
 RUN apk add wget unzip && \
