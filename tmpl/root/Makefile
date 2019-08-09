@@ -7,7 +7,7 @@ GCP_ZONE ?= $(shell [[ -f .config/gcloud/configurations/config_default ]] && cat
 
 nothing:
 
-spinnaker: terraform
+cdenv: terraform hal.deploy.connect
 
 init: .gitconfig capstan gcloud gcloud.services gcloud.test gcp-account.json
 
@@ -26,6 +26,44 @@ debug:
 
 	@printf "%-25.25s = %s\n" "TF_VAR_gcp_project_id"  "$(TF_VAR_gcp_project_id)"
 	@printf "%-25.25s = %s\n" "TF_VAR_ssh_user"        "$(TF_VAR_ssh_user)"
+
+###
+
+is.hal.connected:
+	@CMD_LINES=3 CMD='lsof -nP -i4TCP:8084 -i4TCP:9000' \
+		$(MAKE) --no-print-directory halyard.tunnel.command
+
+hal.deploy.connect:
+	# please ^C to exit, then do a `make is.hal.connected`
+	@CMD_LINES=10 CMD='nohup hal deploy connect &' \
+		$(MAKE) --no-print-directory halyard.tunnel.command
+
+clean.hal.deploy.connect:
+	@CMD_LINES=0 CMD='kill -9 \
+	   `lsof -nP -i4TCP:8084 | grep LISTEN | cut -d\  -f2` \
+	   `lsof -nP -i4TCP:9000 | grep LISTEN | cut -d\  -f2` \
+	   `ps -ef | grep "hal deploy connect" | grep /usr/local/bin/hal | cut -d\  -f2 2>&1` \
+	   && rm .hal.output' \
+	        $(MAKE) --no-print-directory halyard.tunnel.command
+
+###
+
+cmd.hal: halyard.tunnel.command
+
+hal.cmd: halyard.tunnel.command
+
+halyard.tunnel.command:
+	@echo '$(CMD)' | gcloud compute --project "$(GCP_PROJECT)" ssh --zone "us-central1-f" "$(GCP_PROJECT)@halyard-tunnel" --ssh-flag="-o ConnectTimeout=3" 2>&1 | tail -$(CMD_LINES)
+
+###
+
+shell.hal: halyard.tunnel.shell
+
+hal.shell: halyard.tunnel.shell
+
+halyard.tunnel.shell:
+	gcloud compute --project "$(GCP_PROJECT)" ssh --zone "us-central1-f" "$(GCP_PROJECT)@halyard-tunnel"
+
 
 ###
 
