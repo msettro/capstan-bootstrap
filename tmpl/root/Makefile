@@ -7,6 +7,11 @@ GCP_ZONE ?= $(shell [[ -f .config/gcloud/configurations/config_default ]] && cat
 
 nothing:
 
+external.tunnel.command:
+	# Note: run this ssh command (or an equivalent) from outside of capstan-bootstrap container
+	@echo ssh -i .container.root/.ssh/google_compute_engine -L 9000:localhost:9000 -L 8084:localhost:8084 \
+		$(GCP_PROJECT)@$$(gcloud compute instances list | grep halyard-tunnel | awk '{ printf("%s", $$5) }')
+
 cdenv: terraform hal.deploy.connect
 
 init: .gitconfig capstan gcloud gcloud.services gcloud.test gcp-account.json
