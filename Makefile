@@ -26,9 +26,9 @@ GIT_AUTHOR_EMAIL    ?= username@domain.tld
 CAPSTAN_REPO        ?= https://github.com/kenzanlabs/capstan.git
 CAPSTAN_TAG         ?= master
 
-GCP_PROJECT         ?= capstandemoNN
-GCP_ZONE            ?= us-central1-a
+GCP_ACCOUNT         ?= your.capstan.demo.account@gmail.com
 GCP_SERVICE_ACCOUNT ?= terraform-admin
+GCP_ZONE            ?= us-central1-a
 
 CONTAINER_ROOT = .container.root
 
@@ -49,7 +49,6 @@ debug:
 	@printf "%-20.20s = %s\n" CAPSTAN_REPO        "$(CAPSTAN_REPO)"
 	@printf "%-20.20s = %s\n" CAPSTAN_TAG         "$(CAPSTAN_TAG)"
 
-	@printf "%-20.20s = %s\n" GCP_PROJECT         "$(GCP_PROJECT)"
 	@printf "%-20.20s = %s\n" GCP_ZONE            "$(GCP_ZONE)"
 	@printf "%-20.20s = %s\n" GCP_SERVICE_ACCOUNT "$(GCP_SERVICE_ACCOUNT)"
 
@@ -59,12 +58,17 @@ clean: clean.container
 
 ###
 
-shell: $(CONTAINER_ROOT)
+external.tunnel:
+	bash -x .container.root/external.tunnel.command
+
+shell: container.shell
+
+container.shell: $(CONTAINER_ROOT)
 	docker run -it \
 	   -v $$(pwd)/$(CONTAINER_ROOT):/root        \
 	   -e CAPSTAN_REPO="$(CAPSTAN_REPO)"         \
 	   -e CAPSTAN_TAG="$(CAPSTAN_TAG)"           \
-	   -e GCP_PROJECT="$(GCP_PROJECT)"           \
+	   -e GCP_ACCOUNT="$(GCP_ACCOUNT)"           \
 	   -e GCP_ZONE="$(GCP_ZONE)"                 \
 	   -e GCP_SERVICE_ACCOUNT="$(GCP_SERVICE_ACCOUNT)" \
 	   -e GIT_AUTHOR_NAME="$(GIT_AUTHOR_NAME)"   \
