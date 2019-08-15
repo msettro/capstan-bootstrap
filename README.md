@@ -31,9 +31,7 @@ GCP_ZONE             = us-central1-a
 GCP_SERVICE_ACCOUNT  = terraform-admin
 ```
 
-2. Edit the Makefile
-
-Set GCP_ACCOUNT to the value of the Gmail account associated to your GCP account
+2. Edit the Makefile, set GCP_ACCOUNT to the value of the Gmail account associated to your GCP account, then save.
 
 ```
 $ vi Makefile
@@ -46,10 +44,12 @@ $ make container
 $ make container.root
 ```
 
-4. Go inside the container
+4. Go inside the container and look around
 
 ```
 $ make shell
+bash-4.4# env | sort
+bash-4.4# make debug
 ```
 
 5. While inside the container...
