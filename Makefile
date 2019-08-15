@@ -49,6 +49,7 @@ debug:
 	@printf "%-20.20s = %s\n" CAPSTAN_REPO        "$(CAPSTAN_REPO)"
 	@printf "%-20.20s = %s\n" CAPSTAN_TAG         "$(CAPSTAN_TAG)"
 
+	@printf "%-20.20s = %s\n" GCP_ACCOUNT         "$(GCP_ACCOUNT)"
 	@printf "%-20.20s = %s\n" GCP_ZONE            "$(GCP_ZONE)"
 	@printf "%-20.20s = %s\n" GCP_SERVICE_ACCOUNT "$(GCP_SERVICE_ACCOUNT)"
 

@@ -31,13 +31,13 @@ Review the environment variable default values.
 ```
 $ make debug
 CONTAINER_NAME       = kenzan/capstan
-CONTAINER_VERSION    = 0.0.1
+CONTAINER_VERSION    = 0.0.x
 CONTAINER_ROOT       = .container.root
 GIT_AUTHOR_NAME      = Firstname Lastname
 GIT_AUTHOR_EMAIL     = username@domain.tld
 CAPSTAN_REPO         = https://github.com/kenzanlabs/capstan.git
 CAPSTAN_TAG          = master
-GCP_PROJECT          = capstandemoNN
+GCP_ACCOUNT          = your.capstan.demo.account@gmail.com
 GCP_ZONE             = us-central1-a
 GCP_SERVICE_ACCOUNT  = terraform-admin
 ```
