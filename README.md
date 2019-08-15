@@ -4,29 +4,18 @@ Get started faster with [Kenzan Capstan](https://github.com/kenzanlabs/capstan).
 
 Provides a docker container that automates setup steps described in the Getting Started READMEs.
 
-## Support
+## Limitations
 
-* Currently automates steps for GCP ([see here](https://github.com/kenzanlabs/capstan/tree/master/gcp)).
+* Currently automates setup steps for Capstan for GCP ([see here](https://github.com/kenzanlabs/capstan/tree/master/gcp)).
 
 ## Requirements
 
 * Run Docker 18.06.1 or later
-* Google Cloud Platform account with admin access (i.e setting up a trial account is a good option)
+* Google Cloud Platform account with admin access (i.e setting up a trial account is recommended)
 
 ## Get Started
 
-For GCP, setup a project, service account and credentials...
-
-* Choose a name for the GCP project (i.e. capstandemoNN is a placeholder and default; replace NN with your value)
-* Create a GCP project (based on choosen name)
-* Create a GCP terraform-admin service account ([see here](https://github.com/kenzanlabs/capstan/tree/master/gcp)) 
-* Download your service account JSON file
-
-Reference
-
-* https://github.com/kenzanlabs/capstan/tree/master/gcp
-
-Review the environment variable default values.
+1. Review the environment defaults
 
 ```
 $ make debug
@@ -42,30 +31,51 @@ GCP_ZONE             = us-central1-a
 GCP_SERVICE_ACCOUNT  = terraform-admin
 ```
 
-Choose to update the environment values by exporting the new values, setting them on the make command line, or to new values by exporting
+2. Edit the Makefile
+
+Set GCP_ACCOUNT to the value of the Gmail account associated to your GCP account
 
 ```
-$ export CAPSTAN_REPO=https://github.com/myrepo/capstan.git
-$ export CAPSTAN_TAG=feature/mynewfeature
+$ vi Makefile
 ```
 
-Build the bootstrap container:
+3. Build the bootstrap container and container root:
 
 ```
 $ make container
-$ make .container.root
+$ make container.root
 ```
 
-Copy the service account JSON downloaded while setting up GCP project into .container.root
-
-```
-$ cp ~/Downloads/capstandemoNN*.json .container.root/
-```
-
-Next, inside the container, initialize and run Capstan with your GCP project and credentials
+4. Go inside the container
 
 ```
 $ make shell
-bash-4.4# make init
-bash-4.4# make terraform
 ```
+
+5. While inside the container...
+
+...start the bootstrap process...
+
+```
+bash-4.4# make cdenv
+```
+
+... and finish the bootstrap proces...
+
+```
+bash-4.4# make hal.deploy.connect
+bash-4.4# make is.hal.connected
+bash-4.4# make spin.app
+bash-4.4# make external.tunnel.command
+
+```
+
+7. Access Spinnaker
+
+Outside the container...
+
+```
+$ make external.tunnel
+```
+
+In a browser, goto http://localhost:9000
