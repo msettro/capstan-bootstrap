@@ -18,11 +18,11 @@ nothing:
 #    the work around...
 #      run each of the finish dependencies individually
 #
-finish: hal.deploy.connect is.hal.connected spin.app external.tunnel.command
+finish: hal.deploy.connect is.hal.connected spin.setup external.tunnel.command
 
 cdenv: .gitconfig capstan gcloud gcloud.test terraform
 
-clean: clean.spinnaker.app clean.terraform clean.gcp-account.json clean.gcloud.test clean.gcloud clean.capstan clean.gitconfig
+clean: clean.external.tunnel.command clean.spinnaker.app clean.terraform clean.gcp-account.json clean.gcloud.test clean.gcloud clean.capstan clean.gitconfig
 
 debug:
 	@printf "%-25.25s = %s\n" "CAPSTAN_REPO"           "$(CAPSTAN_REPO)"
@@ -37,9 +37,6 @@ debug:
 
 	@printf "%-25.25s = %s\n" "GIT_AUTHOR_EMAIL"       "$(GIT_AUTHOR_EMAIL)"
 	@printf "%-25.25s = %s\n" "GIT_AUTHOR_NAME"        "$(GIT_AUTHOR_NAME)"
-
-	@printf "%-25.25s = %s\n" "TF_VAR_gcp_project_id"  "$(TF_VAR_gcp_project_id)"
-	@printf "%-25.25s = %s\n" "TF_VAR_ssh_user"        "$(TF_VAR_ssh_user)"
 
 ###
 
@@ -61,14 +58,18 @@ external.tunnel.command:
 	@#echo created external.tunnel.command
 	@#ls -l external.tunnel.command
 
-###
-
-spin.pipelines: spinnaker.pipelines
-
-spinnaker.pipelines:
-	echo please see your workbook to create pipelines
+clean.external.tunnel.command:
+	rm -Rf external.tunnel.command
 
 ###
+
+spin.setup: spin.app spin.initial.pipeline
+
+spin.initial.pipeline: spinnaker.initial.pipeline
+
+spinnaker.initial.pipeline:
+	@CMD_LINES=5 CMD='cd pipelines/gcp/0-initial/ && spin pipeline save --file=uat_deploy.json && spin pipeline save --file=prod_seed.json && kubectl apply -f prod-loadbalancer.yaml && kubectl apply -f uat-loadbalancer.yaml && kubectl apply -f dev-loadbalancer.yaml' \
+		$(MAKE) --no-print-directory halyard.tunnel.command
 
 spin.app: spinnaker.app
 
@@ -178,7 +179,7 @@ terraform: capstan gcp-account.json
 clean.terraform:
 	cd /root/capstan/gcp/terraform/ \
 	   && time terraform destroy -var gcp_project_id=$(GCP_PROJECT) -var ssh_user=$(GCP_PROJECT)
-	rm -Rf /root/capstan/gcp/terraform/.terraform.d
+	rm -Rf /root/.terraform.d /root/capstan/gcp/terraform/.terraform.d terraform.log
 
 ###
 
