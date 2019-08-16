@@ -38,9 +38,6 @@ debug:
 	@printf "%-25.25s = %s\n" "GIT_AUTHOR_EMAIL"       "$(GIT_AUTHOR_EMAIL)"
 	@printf "%-25.25s = %s\n" "GIT_AUTHOR_NAME"        "$(GIT_AUTHOR_NAME)"
 
-	@printf "%-25.25s = %s\n" "TF_VAR_gcp_project_id"  "$(TF_VAR_gcp_project_id)"
-	@printf "%-25.25s = %s\n" "TF_VAR_ssh_user"        "$(TF_VAR_ssh_user)"
-
 ###
 
 external.tunnel.command:
@@ -66,7 +63,7 @@ clean.external.tunnel.command:
 
 ###
 
-spin.setup: spin.app spin.intial.pipeline
+spin.setup: spin.app spin.initial.pipeline
 
 spin.initial.pipeline: spinnaker.initial.pipeline
 
